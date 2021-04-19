@@ -1,0 +1,53 @@
+# Source
+source-code-resource-uri: <source-code_git_repo_url>
+source-code-resource-branch: <source-code_git_repo_branch>
+
+# Pipeline
+pipeline-resource-uri: <pipeline_git_repo_url>
+pipeline-resource-branch: <pipeline_git_repo_url>
+
+# Exchange
+exchange-concourse-resource-uri: <exchange-concourse-resource-uri>
+exchange-concourse-resource-tag: <exchange-concourse-resource-tag>
+
+# Runtime Fabric
+rtf-concourse-resource-uri: <rtf-concourse-resource-uri>
+rtf-concourse-resource-tag: <rtf-concourse-resource-tag>
+
+# Platform
+anypoint-platform-url: <anypoint-platform-url>
+connected-app-client-id: <connected-app-client-id>
+connected-app-client-secret: <connected-app-client-secret>
+connected-app-grant-type: <connected-app-grant-type>
+
+# Environment 
+environment-name: <environment-name>
+rtf-instance-name: <rtf-instance-name>
+
+# Settings
+mule-env-name: <mule-env-name>
+application-client-id: <application-client-id>
+application-client-secret: <application-client-secret>
+
+# Application
+application-domain-name: <application-domain-name>
+application-cpu-reserved: <application-cpu-reserved>
+application-cpu-max: <application-cpu-max>
+application-mem-reserved: <application-mem-reserved>
+application-mem-max: <application-mem-max>
+
+# Deployment
+deployment-mule-runtime: <deployment-mule-runtime>
+deployment-replicas: <deployment-replicas>
+deployment-replicas-across-nodes: <deployment-replicas-across-nodes>
+deployment-update-strategy: <deployment-update-strategy>
+deployment-forward-ssl: <deployment-forward-ssl>
+deployment-clustered: <deployment-clustered>
+deployment-last-mile-security: <deployment-last-mile-security>
+
+# Exchange Repository
+exhange-resource-uri: <exhange-resource-uri>
+exchange-resource-client-id: <exchange-resource-client-id>
+exhange-resource-client-secret: <exhange-resource-client-secret>
+exhange-resource-group-id: <exhange-resource-group-id>
+exhange-resource-artifact-id: <exhange-resource-artifact-id>

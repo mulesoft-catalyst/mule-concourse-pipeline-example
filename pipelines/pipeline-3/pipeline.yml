@@ -1,0 +1,137 @@
+---
+resource_types:
+- name: exchange-concourse-resource-type
+  type: registry-image
+  source:
+    repository: {{exchange-concourse-resource-uri}}
+    tag: {{exchange-concourse-resource-tag}}
+    ca_certs: {{docker-registry-ca-certs}}
+
+- name: rtf-concourse-resource-type
+  type: registry-image
+  source:
+    repository: {{rtf-concourse-resource-uri}}
+    tag: {{rtf-concourse-resource-tag}}
+    ca_certs: {{docker-registry-ca-certs}}
+
+resources:
+- name: source-code-resource
+  type: git
+  icon: github
+  source:
+    uri: {{source-code-resource-uri}}
+    branch: {{source-code-resource-branch}}
+    private_key: {{source-code-resource-private-key}}
+
+- name: pipeline-resource
+  type: git
+  icon: github
+  source:
+    uri: {{pipeline-resource-uri}}
+    private_key: {{pipeline-resource-private-key}}
+
+- name: version-resource
+  type: semver
+  icon: github
+  source:
+    driver: git
+    initial_version: 0.0.1
+    uri: {{source-code-resource-uri}}
+    branch: {{source-code-resource-branch}}
+    private_key: {{source-code-resource-private-key}}
+    file: src/main/resources/version
+
+- name: exchange-concourse-resource
+  type: exchange-concourse-resource-type
+  icon: database
+  source:
+    uri: {{exhange-resource-uri}}
+    client_id: {{exchange-resource-client-id}}
+    client_secret: {{exhange-resource-client-secret}}
+    group_id: {{exhange-resource-group-id}}
+    artifact_id: {{exhange-resource-artifact-id}}
+
+- name: rtf-concourse-resource
+  type: rtf-concourse-resource-type
+  icon: server
+  source:
+    uri: {{exhange-resource-uri}}
+    client_id: {{exchange-resource-client-id}}
+    client_secret: {{exhange-resource-client-secret}}
+    mule_env: {{mule-env-name}}
+    environment_name: {{environment-name}}
+    group_id: {{exhange-resource-group-id}}
+    artifact_id: {{exhange-resource-artifact-id}}
+    fabric_name: {{rtf-instance-name}}
+    mule_rt_version: {{deployment-mule-runtime}}
+
+jobs:
+- name: build-and-publish-asset
+  plan:
+  - get: source-code-resource
+    trigger: true
+  - get: pipeline-resource
+  - get: version-resource
+    params: { pre: rc }
+  - task:  build-and-publish-asset
+    file: pipeline-resource/tasks/maven-test-and-package.yml
+    input_mapping: {source-code: source-code-resource, pipeline: pipeline-resource, version: version-resource}
+    output_mapping: {build-output: build-and-test-output}
+    params:
+      BRANCH: {{source-code-resource-branch}}
+      M2_SETTINGS_MULE_EE_REPO_USERNAME: {{m2-settings-mule_ee_repo-username}}
+      M2_SETTINGS_MULE_EE_REPO_PASSWORD: {{m2-settings-mule_ee_repo-password}}
+      M2_SETTINGS_EXCHANGE_REPO_ORG_ID: {{m2-settings-exchange_repo-org-id}}
+      M2_SETTINGS_EXCHANGE_REPO_USERNAME: {{m2-settings-exchange_repo-username}}
+      M2_SETTINGS_EXCHANGE_REPO_PASSWORD: {{m2-settings-exchange_repo-password}}
+  - put: exchange-concourse-resource
+
+- name: deploy-asset
+  plan:
+  - get: exchange-concourse-resource
+    trigger: true
+    passed: [build-and-publish-asset]
+  - put: rtf-concourse-resource
+    params:
+      CPU_ALLOCATION_RESERVED: {{application-cpu-reserved}}
+      CPU_ALLOCATION_LIMIT: {{application-cpu-max}}
+      MEM_ALLOCATION_RESERVED: {{application-mem-reserved}}
+      MEM_ALLOCATION_LIMIT: {{application-mem-max}}
+      IS_CLUSTERED: {{deployment-clustered}}
+      HAS_ENFORCE_DEPLOYING_REPLICAS_ACROSS_NODES: {{deployment-replicas-across-nodes}}
+      APPLICATION_DOMAIN_NAME: {{application-domain-name}}
+      HAS_LAST_MILE_SECURITY: {{deployment-last-mile-security}}
+      HAS_FORWARD_SSL_SESSION: {{deployment-forward-ssl}}
+      UPDATE_STRATEGY: {{deployment-update-strategy}}
+      NUM_REPLICAS: {{deployment-replicas}}
+      ENV_CLIENT_ID: {{application-client-id}}
+      ENV_CLIENT_SECRET: {{application-client-secret}}
+
+- name: increase-major-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: major }
+
+- name: increase-minor-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: minor }
+
+- name: increase-patch-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: patch }
+
+groups:
+- name: publish-and-deploy
+  jobs:
+  - build-and-publish-asset
+  - deploy-asset
+- name: version-management
+  jobs:
+  - increase-major-version
+  - increase-minor-version
+  - increase-patch-version
