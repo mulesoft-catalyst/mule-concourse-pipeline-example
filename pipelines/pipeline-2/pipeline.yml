@@ -1,0 +1,131 @@
+---
+resources:
+- name: source-code-resource
+  type: git
+  source:
+    uri: {{source-code-resource-uri}}
+    branch: {{source-code-resource-branch}}
+    private_key: {{source-code-resource-private-key}}
+
+- name: pipeline-resource
+  type: git
+  source:
+    uri: {{pipeline-resource-uri}}
+    branch: {{pipeline-resource-branch}}
+    private_key: {{pipeline-resource-private-key}}
+
+- name: version-resource
+  type: semver
+  source:
+    driver: git
+    initial_version: 0.0.1
+    uri: {{source-code-resource-uri}}
+    branch: {{source-code-resource-branch}}
+    private_key: {{source-code-resource-private-key}}
+    file: src/main/resources/version
+    
+jobs:
+- name: build-and-verify-asset
+  plan:
+  - get: source-code-resource
+    trigger: true
+  - get: pipeline-resource
+  - get: version-resource
+    params: { pre: rc }
+  - task: build-and-verify-asset
+    file: pipeline-resource/tasks/maven-verify.yml
+    input_mapping: {source-code: source-code-resource, pipeline: pipeline-resource, version: version-resource}
+    params:
+      BRANCH: {{source-code-resource-branch}}
+      M2_SETTINGS_MULE_EE_REPO_USERNAME: {{m2-settings-mule_ee_repo-username}}
+      M2_SETTINGS_MULE_EE_REPO_PASSWORD: {{m2-settings-mule_ee_repo-password}}
+      M2_SETTINGS_EXCHANGE_REPO_ORG_ID: {{m2-settings-exchange_repo-org-id}}
+      M2_SETTINGS_EXCHANGE_REPO_USERNAME: {{m2-settings-exchange_repo-username}}
+      M2_SETTINGS_EXCHANGE_REPO_PASSWORD: {{m2-settings-exchange_repo-password}}
+- name: build-and-publish-asset
+  plan:
+  - get: source-code-resource
+    passed: [build-and-verify-asset]
+    trigger: true
+  - get: pipeline-resource
+  - get: version-resource
+    params: { pre: rc }
+  - task: build-and-publish-asset
+    file: pipeline-resource/tasks/maven-publish.yml
+    input_mapping: {source-code: source-code-resource, pipeline: pipeline-resource, version: version-resource}
+    params:
+      BRANCH: {{source-code-resource-branch}}
+      M2_SETTINGS_MULE_EE_REPO_USERNAME: {{m2-settings-mule_ee_repo-username}}
+      M2_SETTINGS_MULE_EE_REPO_PASSWORD: {{m2-settings-mule_ee_repo-password}}
+      M2_SETTINGS_EXCHANGE_REPO_ORG_ID: {{m2-settings-exchange_repo-org-id}}
+      M2_SETTINGS_EXCHANGE_REPO_USERNAME: {{m2-settings-exchange_repo-username}}
+      M2_SETTINGS_EXCHANGE_REPO_PASSWORD: {{m2-settings-exchange_repo-password}}
+- name: deploy-asset
+  plan:
+  - get: source-code-resource
+    passed: [build-and-publish-asset]
+    trigger: true
+  - get: pipeline-resource
+  - get: version-resource
+    params: { pre: rc }
+  - task: deploy-asset
+    file: pipeline-resource/tasks/maven-deploy.yml
+    input_mapping: {source-code: source-code-resource, pipeline: pipeline-resource, version: version-resource}
+    params:
+      BRANCH: {{source-code-resource-branch}}
+      M2_SETTINGS_MULE_EE_REPO_USERNAME: {{m2-settings-mule_ee_repo-username}}
+      M2_SETTINGS_MULE_EE_REPO_PASSWORD: {{m2-settings-mule_ee_repo-password}}
+      M2_SETTINGS_EXCHANGE_REPO_ORG_ID: {{m2-settings-exchange_repo-org-id}}
+      M2_SETTINGS_EXCHANGE_REPO_USERNAME: {{m2-settings-exchange_repo-username}}
+      M2_SETTINGS_EXCHANGE_REPO_PASSWORD: {{m2-settings-exchange_repo-password}}
+      MULE_ENV_NAME: {{mule-env-name}}
+      ANYPOINT_PLATFORM_URL: {{anypoint-platform-url}}
+      CONNECTED_APP_CLIENT_ID: {{connected-app-client-id}}
+      CONNECTED_APP_CLIENT_SECRET: {{connected-app-client-secret}}
+      CONNECTED_APP_GRANT_TYPE: {{connected-app-grant-type}}
+      ENVIRONMENT_NAME: {{environment-name}}
+      RTF_INSTANCE_NAME: {{rtf-instance-name}}
+      APPLICATION_DOMAIN_NAME: {{application-domain-name}}
+      APPLICATION_CPU_RESERVED: {{application-cpu-reserved}}
+      APPLICATION_CPU_MAX: {{application-cpu-max}}
+      APPLICATION_MEM_RESERVED: {{application-mem-reserved}}
+      APPLICATION_MEM_MAX: {{application-mem-max}}
+      APPLICATION_CLIENT_ID: {{application-client-id}}
+      APPLICATION_CLIENT_SECRET: {{application-client-secret}}
+      DEPLOYMENT_MULE_RUNTIME: {{deployment-mule-runtime}}
+      DEPLOYMENT_REPLICAS: {{deployment-replicas}}
+      DEPLOYMENT_REPLICAS_ACROSS_NODES: {{deployment-replicas-across-nodes}}
+      DEPLOYMENT_UPDATE_STRATEGY: {{deployment-update-strategy}}
+      DEPLOYMENT_FORWARD_SSL: {{deployment-forward-ssl}}
+      DEPLOYMENT_CLUSTERED: {{deployment-clustered}}
+      DEPLOYMENT_LAST_MILE_SECURITY: {{deployment-last-mile-security}}
+
+- name: increase-major-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: major }
+
+- name: increase-minor-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: minor }
+
+- name: increase-patch-version
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: patch }
+
+groups:
+- name: publish-and-deploy
+  jobs:
+  - build-and-verify-asset
+  - build-and-publish-asset
+  - deploy-asset
+- name: version-management
+  jobs:
+  - increase-major-version
+  - increase-minor-version
+  - increase-patch-version
