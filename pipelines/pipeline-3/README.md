@@ -19,8 +19,8 @@ demonstrating 3 lifecycle steps for a Mule 4 application + Runtime Fabric deploy
 
 |No.|Name|Type|Link
 |-|-|-|-
-|1|**exchange-concourse-resource-type**|Custom - **Anypoint Exchange**|[exchange-concourse-resource](https://github.com/mulesoft-consulting/exchange-concourse-resource)
-|2|**rtf-concourse-resource-type**|Custom - **Anypoint Runtime Fabric**|[rtf-concourse-resource](https://github.com/mulesoft-consulting/rtf-concourse-resource)
+|1|**exchange-concourse-resource-type**|Custom - **Anypoint Exchange**|[exchange-concourse-resource](https://github.com/mulesoft-catalyst/exchange-concourse-resource)
+|2|**rtf-concourse-resource-type**|Custom - **Anypoint Runtime Fabric**|[rtf-concourse-resource](https://github.com/mulesoft-catalyst/rtf-concourse-resource)
 
 ### Resources
 

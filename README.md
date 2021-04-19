@@ -1,7 +1,7 @@
 # mule-concourse-pipeline-example
 
 ## About
-A simple Mule 4 API, used for testing & demonstrating Mule 4 application deployments using [Concourse](https://concourse-ci.org/) pipelines in combination with a generic Mule 4 pipeline resource: [mule-concourse-pipeline](https://github.com/mulesoft-consulting/mule-concourse-pipeline).
+A simple Mule 4 API, used for testing & demonstrating Mule 4 application deployments using [Concourse](https://concourse-ci.org/) pipelines in combination with a generic Mule 4 pipeline resource: [mule-concourse-pipeline](https://github.com/mulesoft-catalyst/mule-concourse-pipeline).
 
 The example pipelines can be used as a **foundation** for (more) **complex** pipeline definitions. 
 
@@ -150,4 +150,4 @@ The following is an overview of the different **Concourse** pipeline examples. A
 |-|-|-|-
 |1|[Single Job](pipelines/pipeline-1)|Single job pipeline with 3 separate tasks|Tasks:<br> <li> `Verify`<br><li>`Publish`<br><li>`Deploy`
 |2|[Multiple Jobs](pipelines/pipeline-2)|Multiple jobs pipeline|Jobs:<br><li>`Verify`<br><li>`Publish`<br><li>`Deploy`
-|3|[Multiple Jobs - Custom Resources](pipelines/pipeline-3)|Multiple jobs pipeline including **custom** Concourse [Resource Types](https://concourse-ci.org/resource-types.html):<br><li>**Anypoint Exchange** - [exchange-concourse-resource](https://github.com/mulesoft-consulting/exchange-concourse-resource)<br><li>**Anypoint Runtime Fabric** - [rtf-concourse-resource](https://github.com/mulesoft-consulting/rtf-concourse-resource)|Jobs:<br><li>`Verify` / `Publish`<br><li>`Deploy`
+|3|[Multiple Jobs - Custom Resources](pipelines/pipeline-3)|Multiple jobs pipeline including **custom** Concourse [Resource Types](https://concourse-ci.org/resource-types.html):<br><li>**Anypoint Exchange** - [exchange-concourse-resource](https://github.com/mulesoft-catalyst/exchange-concourse-resource)<br><li>**Anypoint Runtime Fabric** - [rtf-concourse-resource](https://github.com/mulesoft-catalyst/rtf-concourse-resource)|Jobs:<br><li>`Verify` / `Publish`<br><li>`Deploy`
