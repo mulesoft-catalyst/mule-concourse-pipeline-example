@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-    <http:listener-config name="workerinfo-httpListenerConfig">
+    <http:listener-config name="mule4-workerinfo-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
-    <apikit:config name="workerinfo-config" api="workerinfo.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="mule4-workerinfo-config" api="mule4-workerinfo.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <configuration-properties doc:name="Configuration properties" doc:id="35b02826-b6fe-44d1-be69-5633b9234bfa" file="${mule.env}.properties" />
     <global-property doc:name="Global Property" doc:id="7ea259af-daff-457d-a64f-2ca0c96ab932" name="mule.env" value="local" />
-    <api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="a917f2ec-d430-4617-8c5d-66428d2c55bc" flowRef="workerinfo-main" />
-    <flow name="workerinfo-main">
-        <http:listener config-ref="workerinfo-httpListenerConfig" path="/*">
+    <api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="a917f2ec-d430-4617-8c5d-66428d2c55bc" flowRef="mule4-workerinfo-main" />
+    <flow name="mule4-workerinfo-main">
+        <http:listener config-ref="mule4-workerinfo-httpListenerConfig" path="/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
@@ -17,7 +17,7 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="workerinfo-config" />
+        <apikit:router config-ref="mule4-workerinfo-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -99,8 +99,8 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="workerinfo-console">
-        <http:listener config-ref="workerinfo-httpListenerConfig" path="/console/*">
+    <flow name="mule4-workerinfo-console">
+        <http:listener config-ref="mule4-workerinfo-httpListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
@@ -109,7 +109,7 @@ output application/json
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="workerinfo-config" />
+        <apikit:console config-ref="mule4-workerinfo-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -126,16 +126,16 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\workerinfo:workerinfo-config">
+    <flow name="get:\workerinfo:mule4-workerinfo-config">
 		<logger level="INFO" doc:name="Log Start" doc:id="84b47229-3073-4798-969b-d23370391157" message="#[&quot;Ping - BEGIN: (&quot;] #[payload] #[&quot;)&quot;]" />
-		<parse-template doc:name="Load Semver" doc:id="21094054-0430-4bef-8757-b62883fdfb27" location="semver" target="version" targetValue="#[payload replace &quot;\n&quot; with &quot;&quot;]" />
+		<parse-template doc:name="Load Semver" doc:id="21094054-0430-4bef-8757-b62883fdfb27" location="version" target="version" targetValue="#[payload replace &quot;\n&quot; with &quot;&quot;]" />
 		<ee:transform doc:name="Create Response" doc:id="23dec954-bbf8-412e-bfe3-306512ce5821" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	version: vars.semver,
+	version: vars.version,
 	origin: {
 		app: {
 			encoding: app.encoding,
