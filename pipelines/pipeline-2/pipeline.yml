@@ -2,6 +2,7 @@
 resources:
 - name: source-code-resource
   type: git
+  icon: github
   source:
     uri: {{source-code-resource-uri}}
     branch: {{source-code-resource-branch}}
@@ -9,6 +10,7 @@ resources:
 
 - name: pipeline-resource
   type: git
+  icon: github
   source:
     uri: {{pipeline-resource-uri}}
     branch: {{pipeline-resource-branch}}
@@ -16,6 +18,7 @@ resources:
 
 - name: version-resource
   type: semver
+  icon: github
   source:
     driver: git
     initial_version: 0.0.1
