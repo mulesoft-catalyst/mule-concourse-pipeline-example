@@ -139,6 +139,21 @@ The **Pipeline** properties refer to a repository containing the generic pipelin
 pipeline-resource-uri: git@github.com:example-org/mule-concourse-pipeline.git
 pipeline-resource-branch: main
 ```
+
+The **Exchange** properties refer to a Docker registry containing the image asset for this resourse type, e.g.:
+
+```
+exchange-concourse-resource-uri: docker.registry.com:10443/exchange-concourse-resource
+exchange-concourse-resource-tag: latest
+```
+
+The **Runtime Fabric** properties refer to a Docker registry containing the image asset for this resourse type, e.g.:
+
+```
+rtf-concourse-resource-uri: docker.registry.com:10443/rtf-concourse-resource
+rtf-concourse-resource-tag: latest
+```
+
 The **Platform** properties can be used to set the platform url and [Connected Apps](https://docs.mulesoft.com/access-management/connected-apps-overview) credentials, e.g.:
 
 ```
@@ -200,33 +215,33 @@ exhange-resource-artifact-id: mule4-workerinfo
 1. Create/update pipeline, e.g.:
 
 ```
-$ fly -t anypoint sp -p worker-info-dev -c pipeline.yml -l properties.yml -l credentials.yml
+$ fly -t anypoint sp -p mule4-workerinfo-custom-resources -c pipeline.yml -l properties.yml -l credentials.yml
 ```
 
 The **publish-and-deploy** group:
 
-![Concourse UI - worker-info-dev](images/pipeline-3-a.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-3-a.png)
 
 2. Unpause pipeline, e.g.:
 
 ```
-$ fly -t anypoint up -p worker-info-dev
+$ fly -t anypoint up -p mule4-workerinfo-custom-resources
 ```
 
 3. [ **Optional** ] - Trigger job, e.g.:
 
 ```
-$ fly -t anypoint tj -j worker-info-dev/build-and-publish-asset
+$ fly -t anypoint tj -j mule4-workerinfo-custom-resources/build-and-publish-asset
 ```
 
 4. [ **Optional** ] - Watch job, e.g.:
 
 ```
-$ fly -t anypoint watch -j worker-info-dev/build-and-publish-asset
+$ fly -t anypoint watch -j mule4-workerinfo-custom-resources/build-and-publish-asset
 ```
 
 5. [ **Optional** ] - Destroy pipeline, e.g.:
 
 ```
-$ fly -t anypoint dp -p worker-info-dev
+$ fly -t anypoint dp -p mule4-workerinfo-custom-resources
 ```

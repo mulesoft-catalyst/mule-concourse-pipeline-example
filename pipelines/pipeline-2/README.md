@@ -175,33 +175,33 @@ deployment-last-mile-security: false
 1. Create/update pipeline, e.g.:
 
 ```
-$ fly -t anypoint sp -p worker-info-dev -c pipeline.yml -l properties.yml -l credentials.yml
+$ fly -t anypoint sp -p mule4-workerinfo-multiple-job -c pipeline.yml -l properties.yml -l credentials.yml
 ```
 
 The **publish-and-deploy** group:
 
-![Concourse UI - worker-info-dev](images/pipeline-2-a.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-2-a.png)
 
 2. Unpause pipeline, e.g.:
 
 ```
-$ fly -t anypoint up -p worker-info-dev
+$ fly -t anypoint up -p mule4-workerinfo-multiple-job
 ```
 
 3. [ **Optional** ] - Trigger job, e.g.:
 
 ```
-$ fly -t anypoint tj -j worker-info-dev/build-and-verify-asset
+$ fly -t anypoint tj -j mule4-workerinfo-multiple-job/build-and-verify-asset
 ```
 
 4. [ **Optional** ] - Watch job, e.g.:
 
 ```
-$ fly -t anypoint watch -j worker-info-dev/build-and-verify-asset
+$ fly -t anypoint watch -j mule4-workerinfo-multiple-job/build-and-verify-asset
 ```
 
 5. [ **Optional** ] - Destroy pipeline, e.g.:
 
 ```
-$ fly -t anypoint dp -p worker-info-dev
+$ fly -t anypoint dp -p mule4-workerinfo-multiple-job
 ```

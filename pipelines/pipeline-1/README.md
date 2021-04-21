@@ -159,50 +159,50 @@ deployment-last-mile-security: false
 1. Create/update pipeline, e.g.:
 
 ```
-$ fly -t anypoint sp -p worker-info-dev -c pipeline.yml -l properties.yml -l credentials.yml
+$ fly -t anypoint sp -p mule4-workerinfo-single-job -c pipeline.yml -l properties.yml -l credentials.yml
 ```
 
 The **publish-and-deploy** group:
 
-![Concourse UI - worker-info-dev](images/pipeline-1-a.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-1-a.png)
 
 The **version-management** group:
 
-![Concourse UI - worker-info-dev](images/pipeline-1-b.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-1-b.png)
 
 2. Unpause pipeline, e.g.:
 
 ```
-$ fly -t anypoint up -p worker-info-dev
+$ fly -t anypoint up -p mule4-workerinfo-single-job
 ```
 
 An instance of the **job-publish-and-deploy-asset** job (version: **1.0.1-rc.1-af9eff.....7457fcb**):
 
-![Concourse UI - worker-info-dev](images/pipeline-1-c.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-1-c.png)
 
 Published Exchange asset (version: **1.0.1-rc.1-af9eff.....7457fcb**):
 
-<img src="images/pipeline-1-d.png" alt="Concourse UI - worker-info-dev" width="1280"/>
+<img src="images/pipeline-1-d.png" alt="Concourse UI - mule4-workerinfo-dev" width="1280"/>
 
 Deployed Application based on Exchange asset (version: **1.0.1-rc.1-af9eff.....7457fcb**):
 
-![Concourse UI - worker-info-dev](images/pipeline-1-e.png)
+![Concourse UI - mule4-workerinfo-dev](images/pipeline-1-e.png)
 
 3. [ **Optional** ] - Trigger job, e.g.:
 
 ```
-$ fly -t anypoint tj -j worker-info-dev/job-publish-and-deploy-asset
+$ fly -t anypoint tj -j mule4-workerinfo-single-job/job-publish-and-deploy-asset
 ```
 
 4. [ **Optional** ] - Watch job, e.g.:
 
 ```
-$ fly -t anypoint watch -j worker-info-dev/job-publish-and-deploy-asset
+$ fly -t anypoint watch -j mule4-workerinfo-single-job/job-publish-and-deploy-asset
 ```
 
 5. [ **Optional** ] - Destroy pipeline, e.g.:
 
 ```
-$ fly -t anypoint dp -p worker-info-dev
+$ fly -t anypoint dp -p mule4-workerinfo-single-job
 ```
 
