@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
     <http:listener-config name="mule4-workerinfo-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
@@ -129,6 +130,7 @@ output application/json
     <flow name="get:\workerinfo:mule4-workerinfo-config">
 		<logger level="INFO" doc:name="Log Start" doc:id="84b47229-3073-4798-969b-d23370391157" message="#[&quot;Ping - BEGIN: (&quot;] #[payload] #[&quot;)&quot;]" />
 		<parse-template doc:name="Load Semver" doc:id="21094054-0430-4bef-8757-b62883fdfb27" location="version" target="version" targetValue="#[payload replace &quot;\n&quot; with &quot;&quot;]" />
+		<java:invoke method="getDisplayName()" doc:name="Get TimeZone" doc:id="4bee6a34-5182-45a0-a1e2-fd13659f769b" instance="#[server.timeZone]" class="java.util.TimeZone" target="timezone"/>
 		<ee:transform doc:name="Create Response" doc:id="23dec954-bbf8-412e-bfe3-306512ce5821" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -155,7 +157,7 @@ output application/json
 			osName: server.osName,
 			osVersion: server.osVersion,
 			systemProperties: server.systemProperties, 
-			timeZone: server.timeZone,
+			timeZone: vars.timezone,
 			tmpDir: server.tmpDir,
 			userDir: server.userDir,
 			userHome: server.userHome,

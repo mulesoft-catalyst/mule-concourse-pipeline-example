@@ -76,7 +76,17 @@
 					<!-- end: Runtime Fabric Deployment -->
 				</configuration>
 			</plugin>
-		</plugins>
+		<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <args>-parameters</args>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 	<dependencies>
@@ -98,7 +108,13 @@
 			<version>1.4.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
-	</dependencies>
+		<dependency>
+            <groupId>org.mule.module</groupId>
+            <artifactId>mule-java-module</artifactId>
+            <version>1.2.8</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>
